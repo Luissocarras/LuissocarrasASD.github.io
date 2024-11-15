@@ -11,7 +11,9 @@ var highScoreElement = $("#highScore");
 
 // TODO 4a: Create the snake, apple and score variables
 // Game Variables
-
+var snake = {};
+var apple = {};
+var score = 0;
 // Constant Variables
 var ROWS = 20;
 var COLUMNS = 20;
@@ -41,12 +43,40 @@ init();
 
 function init() {
   // TODO 4c-2: initialize the snake
+  // initialize the snake's body as an empty Array
+  // initialize the snake's body as an empty Array
+snake.body = [];
 
+// make the first snakeSquare and set it as the head
+makeSnakeSquare(10, 10);
+snake.head = snake.body[0];
+  
+    // add snakeSquare to the end of the body Array and set it as the new tail
+    snake.body.push(snakeSquare);
+    snake.tail = snakeSquare;
+  }
   // TODO 4b-2: initialize the apple
+/* Create an HTML element for the apple using jQuery. Then find a random
+ * position on the board that is not occupied and position the apple there.
+ */
+function makeApple() {
+  apple.element = $("<div>").addClass("apple").appendTo(board);
+
+  // get a random available row/column on the board
+  var randomPosition = getRandomAvailablePosition();
+
+  // initialize the row/column properties on the Apple Object
+  apple.row = randomPosition.row;
+  apple.column = randomPosition.column;
+
+  // position the apple on the screen
+  repositionSquare(apple);
+}
 
   // TODO 5a: Initialize the interval
+  updateInterval = setInterval(update, 100);
 
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// PROGRAM FUNCTIONS ////////////////////////////////////
@@ -58,23 +88,23 @@ function init() {
  */
 function update() {
   // TODO 5b: Fill in the update function's code block
-}
 
-function checkForNewDirection(event) {
+
+function checkForNewDirection() {
   /* 
   TODO 6b: Update snake.head.direction based on the value of activeKey.
   
   BONUS: Only allow direction changes to take place if the new direction is
   perpendicular to the current direction
   */
-
+ 
   if (activeKey === KEY.LEFT) {
     snake.head.direction = "left";
   }
 
   // FILL IN THE REST
 
-  // console.log(snake.head.direction);     // uncomment me!
+  console.log(snake.head.direction);    
 }
 
 function moveSnake() {
@@ -87,16 +117,32 @@ function moveSnake() {
   column/row properties. 
   
   */
+  for ( snake.body + 0 ) {
+    var snakeSquare = snake.body = 0;
 
+    var nextRow = snake.body = 0;
+    var nextColumn = snake.body = 0;
+    var nextDirection = snake.body = 0;
+
+    snakeSquare.direction = nextDirection;
+    snakeSquare.row = nextRow;
+    snakeSquare.column = nextColumn;
+    repositionSquare(snakeSquare);
+}
+  
   //Before moving the head, check for a new direction from the keyboard input
   checkForNewDirection();
 
   /* 
   TODO 7: determine the next row and column for the snake's head
-  
+
   HINT: The snake's head will need to move forward 1 square based on the value
   of snake.head.direction which may be one of "left", "right", "up", or "down"
   */
+  if (snake.head.direction === "left") {
+    snake.head.column = snake.head.column - 1;
+  }
+  repositionSquare(snake.head);
 }
 
 function hasHitWall() {
@@ -106,7 +152,10 @@ function hasHitWall() {
   
   HINT: What will the row and column of the snake's head be if this were the case?
   */
-
+  ROWS; // the total number of ROWS in the board
+  COLUMNS; // the total number of COLUMNS in the board
+  snake.head.row; // the current row of snake.head
+  snake.head.column; // the current column of snake.head
   return false;
 }
 
@@ -117,9 +166,15 @@ function hasCollidedWithApple() {
   
   HINT: Both the apple and the snake's head are aware of their own row and column
   */
-
+  if (hasCollidedWithApple()) {
+    handleAppleCollision();
+  }
   return false;
 }
+apple.row; // the current row of the apple
+apple.column; // the current column of the apple
+snake.head.row; // the current row of snake.head
+snake.head.column; // the current column of snake.head
 
 function handleAppleCollision() {
   // increase the score and update the score DOM element
@@ -143,8 +198,16 @@ function handleAppleCollision() {
   var column = 0;
 
   // code to determine the row and column of the snakeSquare to add to the snake
+// increase the score and update the score DOM element
+score++;
+scoreElement.text("Score: " + score);
 
-  makeSnakeSquare(row, column);
+var row = 0;
+var column = 0;
+
+// code to determine the row and column of the snakeSquare to add to the snake
+
+makeSnakeSquare(row, column);
 }
 
 function hasCollidedWithSnake() {
@@ -183,8 +246,28 @@ function endGame() {
 /* Create an HTML element for the apple using jQuery. Then find a random
  * position on the board that is not occupied and position the apple there.
  */
-function makeApple() {
-  // TODO 4b-1: Fill in the makeApple() code block
+function makeSnakeSquare(row, column) {
+  // initialize a new snakeSquare Object
+  var snakeSquare = {};
+
+  // make the snakeSquare.element Object and append it to the board
+  snakeSquare.element = $("<div>").addClass("snake").appendTo(board);
+
+  // initialize the row and column properties on the snakeSquare Object
+  snakeSquare.row = row;
+  snakeSquare.column = column;
+
+  // set the position of the snake on the screen
+  repositionSquare(snakeSquare);
+
+  // if this is the head, add the snake-head id
+  if (snake.body.length === 0) {
+    snakeSquare.element.attr("id", "snake-head");
+  }
+
+  // add snakeSquare to the end of the body Array and set it as the new tail
+  snake.body.push(snakeSquare);
+  snake.tail = snakeSquare;
 }
 
 /* Create an HTML element for a snakeSquare using jQuery. Then, given a row and
@@ -192,6 +275,27 @@ function makeApple() {
  * snakeSquare to the snake.body Array and set a new tail.
  */
 function makeSnakeSquare(row, column) {
+   // initialize a new snakeSquare Object
+   var snakeSquare = {};
+
+   // make the snakeSquare.element Object and append it to the board
+   snakeSquare.element = $("<div>").addClass("snake").appendTo(board);
+ 
+   // initialize the row and column properties on the snakeSquare Object
+   snakeSquare.row = row;
+   snakeSquare.column = column;
+ 
+   // set the position of the snake on the screen
+   repositionSquare(snakeSquare);
+ 
+   // if this is the head, add the snake-head id
+   if (snake.body.length === 0) {
+     snakeSquare.element.attr("id", "snake-head");
+   }
+ 
+   // add snakeSquare to the end of the body Array and set it as the new tail
+   snake.body.push(snakeSquare);
+   snake.tail = snakeSquare;
   // TODO 4c-1: Fill in this function's code block
 }
 
@@ -200,16 +304,12 @@ function makeSnakeSquare(row, column) {
   keydown event occurs
   
   The KEY Object creates a map for the Arrow Keys to their keycode:
-
+*/
     KEY.LEFT = 37
     KEY.UP = 38
     KEY.RIGHT = 39
     KEY.DOWN = 40
-*/
-function handleKeyDown(event) {
-  // TODO 6a: make the handleKeyDown function register which key is pressed
-  
-}
+
 
 /* Given a gameSquare (which may be a snakeSquare or the apple), position
  * the gameSquare on the screen.
@@ -228,25 +328,6 @@ function repositionSquare(square) {
 
 /* Returns a (row,column) Object that is not occupied by another game component
  */
-function getRandomAvailablePosition() {
-  var spaceIsAvailable;
-  var randomPosition = {};
-
-  /* Generate random positions until one is found that doesn't overlap with the snake */
-  while (!spaceIsAvailable) {
-    randomPosition.column = Math.floor(Math.random() * COLUMNS);
-    randomPosition.row = Math.floor(Math.random() * ROWS);
-    spaceIsAvailable = true;
-
-    /*
-    TODO 13: After generating the random position determine if that position is
-    not occupied by a snakeSquare in the snake's body. If it is then set 
-    spaceIsAvailable to false so that a new position is generated.
-    */
-  }
-
-  return randomPosition;
-}
 
 function calculateHighScore() {
   // retrieve the high score from session storage if it exists, or set it to 0
@@ -260,3 +341,4 @@ function calculateHighScore() {
 
   return highScore;
 }
+};
