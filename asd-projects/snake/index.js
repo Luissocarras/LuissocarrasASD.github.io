@@ -37,7 +37,8 @@ var activeKey;
 
 // TODO: turn on keyboard inputs
 $("body").on("keydown", handleKeyDown);
-
+activeKey = event.which;
+console.log(activeKey);
 // start the game
 init();
 
@@ -88,12 +89,22 @@ function makeApple() {
  */
 function update() {
   // TODO 5b: Fill in the update function's code block
-
+  
+    moveSnake();
+  
+    if (hasHitWall() || hasCollidedWithSnake()) {
+      endGame();
+    }
+  
+    if (hasCollidedWithApple()) {
+      handleAppleCollision();
+    }
+  }
 
 function checkForNewDirection() {
   /* 
   TODO 6b: Update snake.head.direction based on the value of activeKey.
-  
+ 
   BONUS: Only allow direction changes to take place if the new direction is
   perpendicular to the current direction
   */
@@ -117,12 +128,12 @@ function moveSnake() {
   column/row properties. 
   
   */
-  for ( snake.body + 0 ) {
-    var snakeSquare = snake.body = 0;
-
-    var nextRow = snake.body = 0;
-    var nextColumn = snake.body = 0;
-    var nextDirection = snake.body = 0;
+  for ( var i = snake.body.length -1; i > 0; i--  ) {
+    var snakeSquare = snake.body[i];
+    var nextSnakeSquare = snake.body[i-1];
+    var nextRow = nextSnakeSquare.row;
+    var nextColumn = nextSnakeSquare.column;
+    var nextDirection = nextSnakeSquare.direction;
 
     snakeSquare.direction = nextDirection;
     snakeSquare.row = nextRow;
@@ -143,8 +154,18 @@ function moveSnake() {
     snake.head.column = snake.head.column - 1;
   }
   repositionSquare(snake.head);
-}
-
+  if (snake.head.direction === "right") {
+    snake.head.column = snake.head.column + 1;
+  }
+  repositionSquare(snake.head);
+  if (snake.head.direction === "up") {
+    snake.head.column = snake.head.column + 1;
+  }
+  repositionSquare(snake.head);
+  if (snake.head.direction === "down") {
+    snake.head.column = snake.head.column - 1;
+  }
+  repositionSquare(snake.head);
 function hasHitWall() {
   /* 
   TODO 8: Should return true if the snake's head has collided with the four walls of the
@@ -298,7 +319,23 @@ function makeSnakeSquare(row, column) {
    snake.tail = snakeSquare;
   // TODO 4c-1: Fill in this function's code block
 }
+/* Create an HTML element for the apple using jQuery. Then find a random
+ * position on the board that is not occupied and position the apple there.
+ */
+function makeApple() {
+  // make the apple jQuery Object and append it to the board
+  apple.element = $("<div>").addClass("apple").appendTo(board);
 
+  // get a random available row/column on the board
+  var randomPosition = getRandomAvailablePosition();
+
+  // initialize the row/column properties on the Apple Object
+  apple.row = randomPosition.row;
+  apple.column = randomPosition.column;
+
+  // position the apple on the screen
+  repositionSquare(apple);
+}
 /* 
   event.which returns the keycode of the key that is pressed when the
   keydown event occurs
